@@ -1,0 +1,208 @@
+/* ══════════════════════════════════════════════════════════
+   glass-refraction — Liquid Glass Design System
+   Based on Apple's Liquid Glass (WWDC 2025) + kube.io SVG
+   refraction research.  Three tiers:
+     .glass      — dense  (navbar, footer)
+     .glass-card — medium (content cards)
+     .glass-pill — light  (tags, badges)
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Custom Properties (theming) ── */
+
+:root {
+  /* Blur / Saturation */
+  --gr-blur: 26px;
+  --gr-blur-card: 20px;
+  --gr-blur-pill: 8px;
+  --gr-saturation: 1.7;
+  --gr-saturation-card: 1.5;
+  --gr-saturation-pill: 1.3;
+
+  /* Border radius */
+  --gr-radius: 20px;
+  --gr-radius-card: 16px;
+  --gr-radius-pill: 9999px;
+
+  /* Base colors */
+  --gr-bg-start: rgba(18, 22, 35, 0.48);
+  --gr-bg-end: rgba(12, 16, 28, 0.42);
+
+  /* Chromatic dispersion colors */
+  --gr-chromatic-blue: rgba(0, 180, 255, 0.045);
+  --gr-chromatic-violet: rgba(120, 80, 255, 0.04);
+  --gr-chromatic-pink: rgba(255, 100, 200, 0.035);
+  --gr-chromatic-green: rgba(100, 255, 180, 0.025);
+
+  /* Shimmer speed */
+  --gr-shimmer-duration: 7s;
+  --gr-specular-duration: 5s;
+}
+
+/* ── Keyframes ── */
+
+@keyframes glass-shimmer {
+  0%   { background-position: -200% 0, 0 0; }
+  100% { background-position:  200% 0, 0 0; }
+}
+
+@keyframes specular-breathe {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
+/* ── Tier 1 — .glass (navbar, footer) ── */
+
+.glass {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--gr-radius);
+
+  /* Shimmer sweep + translucent frosted base */
+  background:
+    linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 50%, transparent 60%),
+    linear-gradient(135deg, var(--gr-bg-start), var(--gr-bg-end));
+  background-size: 200% 100%, 100% 100%;
+  animation: glass-shimmer var(--gr-shimmer-duration) ease-in-out infinite;
+
+  /* Frosted glass core: blur + color boost + brightness lift */
+  -webkit-backdrop-filter: blur(var(--gr-blur)) saturate(var(--gr-saturation)) brightness(1.08);
+  backdrop-filter: blur(var(--gr-blur)) saturate(var(--gr-saturation)) brightness(1.08);
+
+  /* Ring border + inset highlight + depth shadow */
+  box-shadow:
+    0 0 0 0.5px rgba(255,255,255,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 4px 24px -4px rgba(0,0,0,0.30);
+}
+
+/* Specular highlight — soft overhead glow + sharp top-edge line */
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 45%),
+    linear-gradient(90deg, transparent 8%, rgba(255,255,255,0.55) 50%, transparent 92%);
+  background-size: 100% 100%, 100% 1px;
+  background-position: 0 0, 0 0;
+  background-repeat: no-repeat;
+  animation: specular-breathe var(--gr-specular-duration) ease-in-out infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Prismatic refraction — chromatic color dispersion + edge tinting */
+.glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 55% 50% at 12% 50%, var(--gr-chromatic-blue) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 55% at 50% 12%, var(--gr-chromatic-violet) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 50% at 88% 50%, var(--gr-chromatic-pink) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 55% at 50% 88%, var(--gr-chromatic-green) 0%, transparent 70%);
+  /* Chromatic inset edges — each side refracts a different wavelength */
+  box-shadow:
+    inset  1px  0 0 0 rgba(0,180,255,0.07),
+    inset -1px  0 0 0 rgba(255,100,200,0.07),
+    inset  0  1px 0 0 rgba(100,255,180,0.05),
+    inset  0 -1px 0 0 rgba(255,200,50,0.05);
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── Tier 2 — .glass-card (content cards) ── */
+
+.glass-card {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--gr-radius-card);
+  background: linear-gradient(160deg, rgba(255,255,255,0.06) 0%, rgba(15,18,30,0.52) 100%);
+  -webkit-backdrop-filter: blur(var(--gr-blur-card)) saturate(var(--gr-saturation-card));
+  backdrop-filter: blur(var(--gr-blur-card)) saturate(var(--gr-saturation-card));
+  box-shadow:
+    0 0 0 0.5px rgba(255,255,255,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 2px 12px -4px rgba(0,0,0,0.3);
+  transition:
+    transform 0.35s cubic-bezier(0.4,0,0.2,1),
+    box-shadow 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 0.5px rgba(255,255,255,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 8px 32px -8px rgba(0,0,0,0.45);
+}
+
+.glass-card--no-hover {
+  transition: none;
+}
+
+.glass-card--no-hover:hover {
+  transform: none;
+  box-shadow:
+    0 0 0 0.5px rgba(255,255,255,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 2px 12px -4px rgba(0,0,0,0.3);
+}
+
+/* Card specular line */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 14%;
+  right: 14%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.30) 50%, transparent);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Card chromatic edges — visible on hover */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset  1px  0 0 0 rgba(0,180,255,0.05),
+    inset -1px  0 0 0 rgba(255,100,200,0.05),
+    inset  0  1px 0 0 rgba(100,255,180,0.03),
+    inset  0 -1px 0 0 rgba(255,200,50,0.03);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.glass-card:hover::after {
+  opacity: 1;
+}
+
+/* ── Tier 3 — .glass-pill (tags, pills) ── */
+
+.glass-pill {
+  display: inline-block;
+  border-radius: var(--gr-radius-pill);
+  -webkit-backdrop-filter: blur(var(--gr-blur-pill)) saturate(var(--gr-saturation-pill));
+  backdrop-filter: blur(var(--gr-blur-pill)) saturate(var(--gr-saturation-pill));
+  background: rgba(255,255,255,0.05);
+  box-shadow:
+    0 0 0 0.5px rgba(255,255,255,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  transition: all 0.25s ease;
+}
+
+.glass-pill:hover {
+  background: rgba(255,255,255,0.09);
+  box-shadow:
+    0 0 0 0.5px rgba(255,255,255,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+}

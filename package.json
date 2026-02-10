@@ -1,0 +1,71 @@
+{
+  "name": "glass-refraction",
+  "version": "0.1.0",
+  "description": "Liquid Glass design system — CSS + React components with SVG refraction, specular highlights, and chromatic edge dispersion",
+  "author": "Moeez Shabbir",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeez-shabbir/glass-refraction.git"
+  },
+  "keywords": [
+    "glass",
+    "liquid-glass",
+    "glassmorphism",
+    "refraction",
+    "backdrop-filter",
+    "frosted-glass",
+    "react",
+    "css",
+    "design-system",
+    "apple",
+    "wwdc"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./css": "./dist/css/glass.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0"
+  }
+}
